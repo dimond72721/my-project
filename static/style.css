@@ -1,0 +1,37 @@
+body{
+    background:#f5f7fa;
+}
+
+.card{
+    border:none;
+    border-radius:12px;
+}
+
+.card-header{
+    font-weight:bold;
+}
+
+.btn{
+    border-radius:8px;
+}
+
+.navbar-brand{
+    font-weight:bold;
+    font-size:22px;
+}
+
+.text-decoration-line-through{
+    opacity:.65;
+}
+
+textarea{
+    resize:none;
+}
+
+.alert{
+    border-radius:8px;
+}
+
+.shadow{
+    box-shadow:0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
