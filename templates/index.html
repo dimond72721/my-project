@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Мої завдання{% endblock %}
+
+{% block content %}
+
+<div class="row">
+
+    <div class="col-lg-4">
+
+        <div class="card shadow mb-4">
+
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Нове завдання</h4>
+            </div>
+
+            <div class="card-body">
+
+                <form action="{{ url_for('tasks.add_task') }}" method="POST">
+
+                    <div class="mb-3">
+                        <label class="form-label">Назва</label>
+
+                        <input
+                            type="text"
+                            name="title"
+                            class="form-control"
+                            required
+                            maxlength="200">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Опис</label>
+
+                        <textarea
+                            name="description"
+                            rows="4"
+                            class="form-control"></textarea>
+                    </div>
+
+                    <button class="btn btn-success w-100">
+                        ➕ Додати
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-8">
+
+        <h3 class="mb-3">Мої завдання</h3>
+
+        {% if tasks %}
+
+            {% for task in tasks %}
+
+            <div class="card shadow-sm mb-3">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            {% if task.completed %}
+
+                                <h5 class="text-decoration-line-through text-success">
+                                    {{ task.title }}
+                                </h5>
+
+                            {% else %}
+
+                                <h5>
+                                    {{ task.title }}
+                                </h5>
+
+                            {% endif %}
+
+                            <p class="mb-1">
+                                {{ task.description }}
+                            </p>
+
+                            <small class="text-muted">
+                                Створено:
+                                {{ task.created_at.strftime("%d.%m.%Y %H:%M") }}
+                            </small>
+
+                        </div>
+
+                        <div class="text-end">
+
+                            <a
+                                href="{{ url_for('tasks.toggle_task', id=task.id) }}"
+                                class="btn btn-warning btn-sm mb-2">
+
+                                {% if task.completed %}
+                                    Скасувати
+                                {% else %}
+                                    Виконано
+                                {% endif %}
+
+                            </a>
+
+                            <br>
+
+                            <a
+                                href="{{ url_for('tasks.edit_task', id=task.id) }}"
+                                class="btn btn-primary btn-sm mb-2">
+
+                                Редагувати
+
+                            </a>
+
+                            <br>
+
+                            <a
+                                href="{{ url_for('tasks.delete_task', id=task.id) }}"
+                                class="btn btn-danger btn-sm"
+                                onclick="return confirm('Видалити завдання?')">
+
+                                Видалити
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="alert alert-info">
+                У вас поки що немає завдань.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
