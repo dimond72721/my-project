@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Реєстрація{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-md-6">
+
+        <div class="card shadow">
+
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Реєстрація</h3>
+            </div>
+
+            <div class="card-body">
+
+                <form method="POST">
+
+                    <div class="mb-3">
+                        <label class="form-label">Ім'я користувача</label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="username"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+
+                        <input
+                            type="email"
+                            class="form-control"
+                            name="email"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Пароль</label>
+
+                        <input
+                            type="password"
+                            class="form-control"
+                            name="password"
+                            minlength="6"
+                            required>
+                    </div>
+
+                    <button class="btn btn-success w-100">
+                        Зареєструватися
+                    </button>
+
+                </form>
+
+                <hr>
+
+                <p class="text-center">
+                    Вже є акаунт?
+                    <a href="{{ url_for('auth.login') }}">
+                        Увійти
+                    </a>
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
