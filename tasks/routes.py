@@ -1,8 +1,14 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 
-from extensions import db
-from models import Task
+from database import (
+    get_tasks,
+    get_task,
+    create_task,
+    update_task,
+    delete_task,
+    toggle_task_status
+)
 
 tasks = Blueprint("tasks", __name__)
 
@@ -11,7 +17,7 @@ tasks = Blueprint("tasks", __name__)
 @login_required
 def index():
 
-    task_list = Task.query.filter_by(user_id=current_user.id).order_by(Task.created_at.desc()).all()
+    task_list = get_tasks(current_user.id)
 
     return render_template("index.html", tasks=task_list)
 
@@ -23,19 +29,11 @@ def add_task():
     title = request.form.get("title")
     description = request.form.get("description")
 
-    # Серверная проверка
     if not title or title.strip() == "":
         flash("Назва завдання не може бути порожньою.", "danger")
         return redirect(url_for("tasks.index"))
 
-    task = Task(
-        title=title,
-        description=description,
-        user_id=current_user.id
-    )
-
-    db.session.add(task)
-    db.session.commit()
+    create_task(title, description, current_user.id)
 
     flash("Завдання додано.", "success")
 
@@ -46,7 +44,7 @@ def add_task():
 @login_required
 def edit_task(id):
 
-    task = Task.query.filter_by(id=id, user_id=current_user.id).first_or_404()
+    task = get_task(id, current_user.id)
 
     if request.method == "POST":
 
@@ -57,10 +55,7 @@ def edit_task(id):
             flash("Назва не може бути порожньою.", "danger")
             return redirect(url_for("tasks.edit_task", id=id))
 
-        task.title = title
-        task.description = description
-
-        db.session.commit()
+        update_task(task, title, description)
 
         flash("Завдання оновлено.", "success")
 
@@ -71,12 +66,11 @@ def edit_task(id):
 
 @tasks.route("/delete/<int:id>")
 @login_required
-def delete_task(id):
+def delete(id):
 
-    task = Task.query.filter_by(id=id, user_id=current_user.id).first_or_404()
+    task = get_task(id, current_user.id)
 
-    db.session.delete(task)
-    db.session.commit()
+    delete_task(task)
 
     flash("Завдання видалено.", "warning")
 
@@ -85,12 +79,10 @@ def delete_task(id):
 
 @tasks.route("/toggle/<int:id>")
 @login_required
-def toggle_task(id):
+def toggle(id):
 
-    task = Task.query.filter_by(id=id, user_id=current_user.id).first_or_404()
+    task = get_task(id, current_user.id)
 
-    task.completed = not task.completed
-
-    db.session.commit()
+    toggle_task_status(task)
 
     return redirect(url_for("tasks.index"))
